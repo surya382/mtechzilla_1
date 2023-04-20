@@ -1,8 +1,8 @@
 import React from 'react'
-import {Box, FormControl, FormLabel, Input, Heading, Button} from "@chakra-ui/react"
+import {Box, FormControl, FormLabel, Input, Heading, Button, useToast} from "@chakra-ui/react"
 import { useState } from 'react'
 import {createUserWithEmailAndPassword} from "firebase/auth"
-import { auth } from './firebase';
+import { auths } from './firebase';
 import {useNavigate} from "react-router-dom"
 
 const Signup = () => {
@@ -11,7 +11,8 @@ const Signup = () => {
         email:"",
         password:""
     });
-     
+    const toast = useToast();
+
     const navigate=useNavigate();
 
     const handlechange=(e)=>{
@@ -27,12 +28,26 @@ const Signup = () => {
 
             try{
 
-                await createUserWithEmailAndPassword(auth, user.email, user.password).then((res)=>{
+                await createUserWithEmailAndPassword(auths, user.email, user.password).then((res)=>{
+                    toast({
+                        title: "Registered successfully",
+                        status: "success",
+                        position:"top",
+                        duration: 2000,
+                        isClosable: true,
+                      })
                     navigate("/login")
                 })
 
             }
             catch(err){
+                toast({
+                    title: "Failed to Register",
+                    status: "error",
+                    position:"top",
+                    duration: 2000,
+                    isClosable: true,
+                  })
                 console.log(err);
             }
         }
